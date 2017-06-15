@@ -11,6 +11,7 @@ class Code
   }
 
   def initialize(pegs_array)
+    pegs_array
     @pegs = pegs_array
   end
 
@@ -44,7 +45,7 @@ class Code
   end
 
   def ==(input)
-    return false if !input.is_a?(Code)
+    return false if self.class != input.class
     self.pegs == input.pegs
   end
 
@@ -52,4 +53,20 @@ end
 
 class Game
   attr_reader :secret_code
+
+  def initialize(code= Code.random)
+    @secret_code = code
+  end
+
+  def get_guess
+    Code.parse(@secret_code.pegs.join)
+  end
+
+  def display_matches(code_object)
+    exact_matches = code_object.exact_matches(@secret_code)
+    puts "exactly #{exact_matches} matches."
+    near_matches = code_object.near_matches(@secret_code)
+    puts "near #{near_matches} matches."
+  end
+
 end
