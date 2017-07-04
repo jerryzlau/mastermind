@@ -11,7 +11,6 @@ class Code
   }
 
   def initialize(pegs_array)
-    pegs_array
     @pegs = pegs_array
   end
 
@@ -22,8 +21,7 @@ class Code
   end
 
   def self.random
-    answer = []
-    4.times {answer << PEGS.keys.sample}
+    answer = PEGS.keys.sample(4)
     Code.new(answer)
   end
 
@@ -59,14 +57,61 @@ class Game
   end
 
   def get_guess
-    Code.parse(@secret_code.pegs.join)
+    puts "What are your guesses?"
+    input = gets.chomp
+    if input == "tell me!"
+      return "answer"
+    elsif valid?(input)
+      return Code.parse(input)
+    else
+      raise
+    end
+
+    rescue
+      puts "Invalid input!"
+    retry
+  end
+
+  def valid?(input)
+    return false if input.length != 4
+    input.upcase.chars.all? {|el| Code::PEGS.keys.include?(el)}
   end
 
   def display_matches(code_object)
     exact_matches = code_object.exact_matches(@secret_code)
-    puts "exactly #{exact_matches} matches."
+    puts "You have #{exact_matches} exact matches."
     near_matches = code_object.near_matches(@secret_code)
-    puts "near #{near_matches} matches."
+    puts "And #{near_matches} near matches."
   end
 
+  def play
+    guess = ""
+
+    100.times do
+      guess = get_guess
+      if guess == "answer"
+        answer = @secret_code.pegs
+        puts "It's a shame you gave up. Here's the answer: #{answer}."
+        return
+      elsif guess == @secret_code
+        puts "You've got it!"
+        return
+      else
+        puts "You didn't get it right. Here are the stats:"
+        display_matches(guess)
+      end
+    end
+
+
+  end
+
+end
+
+if $0 == __FILE__
+  puts "Welcome to mastermind!"
+  puts "Input 4 colors. ex. gggg"
+  puts "Avaliable colors are R G B Y O P"
+  puts "If you want to give up and get the answer, type \"tell me!\""
+  puts "-----------------------------------------------------------"
+  Game.new.play
 end
