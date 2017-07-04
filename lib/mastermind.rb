@@ -57,7 +57,9 @@ class Game
   end
 
   def get_guess
-    puts "What are your guesses?"
+    puts "--------------------------------------------------------"
+    p @secret_code.pegs
+    puts "What are your guesses? ex. R G B Y O P"
     input = gets.chomp
     if input == "tell me!"
       return "answer"
@@ -112,6 +114,5 @@ if $0 == __FILE__
   puts "Input 4 colors. ex. gggg"
   puts "Avaliable colors are R G B Y O P"
   puts "If you want to give up and get the answer, type \"tell me!\""
-  puts "-----------------------------------------------------------"
   Game.new.play
 end
